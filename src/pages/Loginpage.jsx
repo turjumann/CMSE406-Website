@@ -13,7 +13,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { FaGoogle } from "react-icons/fa";
+import { FaUserCheck } from "react-icons/fa";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Card } from "../components/Card";
 import DividerWithText from "../components/DividerWithText";
@@ -28,10 +28,45 @@ export default function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting2, setIsSubmitting2] = useState(false);
   const toast = useToast();
   const { login } = useAuth();
 
   const mounted = useMounted();
+  const loginAdmin = () => {
+    if (!email || !password) {
+      toast({
+        description: "Credentials are not valid",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    setIsSubmitting2(true);
+    login(email, password)
+      .then((response) => {
+        console.log(response);
+        history.push(location.state?.from ?? "/");
+        toast({
+          description: "Logged in as Admin",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .finally(() => {
+        mounted.current && setIsSubmitting2(false);
+      });
+  };
 
   return (
     <Layout>
@@ -57,7 +92,7 @@ export default function Loginpage() {
                 console.log(response);
                 history.push(location.state?.from ?? "/");
                 toast({
-                  description: "Logged in successfully",
+                  description: "Logged in as Gov Auth",
                   status: "success",
                   duration: 2000,
                   isClosable: true,
@@ -123,12 +158,13 @@ export default function Loginpage() {
         <DividerWithText my={6}>OR</DividerWithText>
         <Button
           variant="outline"
+          isLoading={isSubmitting2}
           isFullWidth
           colorScheme="red"
-          leftIcon={<FaGoogle />}
-          onClick={() => alert("sign in with google")}
+          leftIcon={<FaUserCheck />}
+          onClick={loginAdmin}
         >
-          Sign in with Google
+          Sign in as Admin
         </Button>
       </Card>
     </Layout>

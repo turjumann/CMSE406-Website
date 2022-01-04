@@ -28,7 +28,7 @@ export default function AdminPanelPage() {
   const propsToBePassed = {
     adminName: "Admin",
     adminEmail: "@Email",
-    adminImg: "ImgUrlz",
+    adminImg: "ImgUrl",
   };
 
   return (

@@ -21,12 +21,15 @@ const AuthContext = createContext({
   currentUser: null,
   allUsers: null,
   news: null,
+  wUser: null,
   addNews: () => Promise,
   register: () => Promise,
   login: () => Promise,
   logout: () => Promise,
   forgotPassword: () => Promise,
   resetPassword: () => Promise,
+  addUsersToDb: () => Promise,
+  checkUsers: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -35,6 +38,27 @@ export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [news, setNews] = useState([{ title: "Loading..." }]);
+  const [wUser, setWUser] = useState();
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "websiteUsers"),
+      (snapshot) => {
+        snapshot.docs.map((doc) => {
+          if (doc.data().email === currentUser?.email) {
+            if (doc.data().role === "Admin") {
+              setWUser("Admin");
+            } else {
+              setWUser("Gov");
+            }
+          }
+        });
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser]);
 
   //Getting the current logged in user
   useEffect(() => {
@@ -68,25 +92,26 @@ export default function AuthContextProvider({ children }) {
     };
   }, []);
 
-  const register = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const register = async (email, password) => {
+    return await createUserWithEmailAndPassword(auth, email, password);
   };
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
-
-  const logout = () => {
-    signOut(auth);
+  const login = async (email, password) => {
+    return await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const forgotPassword = (email) => {
-    return sendPasswordResetEmail(auth, email, {
+  const logout = async () => {
+    setWUser();
+    await signOut(auth);
+  };
+
+  const forgotPassword = async (email) => {
+    return await sendPasswordResetEmail(auth, email, {
       url: "http://localhost:3000/login",
     });
   };
 
-  const resetPassword = (oobCode, newPassword) => {
-    return confirmPasswordReset(auth, oobCode, newPassword);
+  const resetPassword = async (oobCode, newPassword) => {
+    return await confirmPasswordReset(auth, oobCode, newPassword);
   };
 
   const addNews = async ({ author, title, body }) => {
@@ -95,16 +120,27 @@ export default function AuthContextProvider({ children }) {
     await addDoc(collectionRef, payload);
   };
 
+  const addUsersToDb = async (email, role) => {
+    const collectionRef = collection(db, "websiteUsers");
+    const payload = { email, role };
+    await addDoc(collectionRef, payload);
+  };
+
+  const checkUsers = (email) => {};
+
   const value = {
     currentUser,
     allUsers,
     news,
+    wUser,
     addNews,
     register,
     login,
     logout,
     forgotPassword,
     resetPassword,
+    addUsersToDb,
+    checkUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

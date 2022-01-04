@@ -8,9 +8,10 @@ import {
   Input,
   Stack,
   useToast,
+  Checkbox,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { FaGoogle } from "react-icons/fa";
+import { FaUserCheck } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { Card } from "../components/Card";
 import DividerWithText from "../components/DividerWithText";
@@ -22,10 +23,11 @@ export default function Registerpage() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [checkbox, setCheckbox] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
-  const { register } = useAuth();
+  const { register, addUsersToDb } = useAuth();
   const mounted = useMounted();
   return (
     <Layout>
@@ -47,7 +49,10 @@ export default function Registerpage() {
             }
             setIsSubmitting(true);
             register(email, password)
-              .then((response) => console.log(response))
+              .then((response) => {
+                console.log(response);
+                addUsersToDb(email, checkbox ? "Admin" : "Gov");
+              })
               .catch((error) => {
                 console.log(error);
                 toast({
@@ -85,6 +90,15 @@ export default function Registerpage() {
                 required
               />
             </FormControl>
+            <Checkbox
+              isChecked={checkbox}
+              onChange={(e) => {
+                setCheckbox(e.target.checked, checkbox);
+              }}
+            >
+              Admin
+            </Checkbox>
+
             <Button
               isLoading={isSubmitting}
               type="submit"
@@ -101,16 +115,6 @@ export default function Registerpage() {
             Login
           </Button>
         </Center>
-        <DividerWithText my={6}>OR</DividerWithText>
-        <Button
-          variant="outline"
-          isFullWidth
-          colorScheme="red"
-          leftIcon={<FaGoogle />}
-          onClick={() => alert("sign in with google")}
-        >
-          Sign in with Google
-        </Button>
       </Card>
     </Layout>
   );

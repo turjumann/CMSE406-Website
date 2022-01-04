@@ -25,21 +25,26 @@ import {
   Modal,
   useDisclosure,
   Button,
+  Image,
+  Center,
+  Text,
+  Grid,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
 import { useAuth } from "../Contexts/AuthContext";
-import { InfoIcon } from "@chakra-ui/icons";
+import { InfoIcon, CheckIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
 import GovUsers from "../components/GovUsers";
+import ExaminationCards from "../components/ExaminationCards";
 
 export default function GovPage() {
   const [item, setItem] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [scrollBehavior, setScrollBehavior] = useState("inside");
+  const [scrollBehavior, setScrollBehavior] = useState("outside");
   const btnRef = useRef();
+
   const { allUsers } = useAuth();
-  console.log(allUsers);
   let patientCounter = 0;
   let docCounter = 0;
   const propsToBePassed = {
@@ -52,6 +57,7 @@ export default function GovPage() {
     <Layout>
       <>
         <Modal
+          size={item?.age ? "xl" : null}
           onClose={onClose}
           finalFocusRef={btnRef}
           isOpen={isOpen}
@@ -61,13 +67,87 @@ export default function GovPage() {
           <ModalContent>
             <ModalHeader>
               <Badge mr={3} borderRadius="full" px="2" colorScheme="green">
-                Author
+                Name
               </Badge>
-              {item.name}
+              {item.name} {item.surname}
             </ModalHeader>
-            <ModalHeader>{}</ModalHeader>
+            <ModalHeader></ModalHeader>
             <ModalCloseButton />
-            <ModalBody>{}</ModalBody>
+            <ModalBody align="center"></ModalBody>
+            <ModalBody>
+              <div align="center">
+                <Image
+                  borderRadius="full"
+                  boxSize="150px"
+                  src={item.profilePhotoUrl}
+                  alt="Photo Url"
+                />
+              </div>
+              <Text>
+                <Badge mr={3} borderRadius="full" px="2" colorScheme="blue">
+                      Email    
+                </Badge>
+                {item.email}
+              </Text>
+              {item?.hospital ? (
+                <Text>
+                  <Badge mr={3} borderRadius="full" px="2" colorScheme="purple">
+                     Hospital 
+                  </Badge>
+                  {item.hospital}
+                </Text>
+              ) : (
+                <div>
+                  <Text>
+                    <Badge
+                      mr={3}
+                      borderRadius="full"
+                      px="2"
+                      colorScheme="purple"
+                    >
+                            Age      
+                    </Badge>
+                    {item.age + " years old"}
+                  </Text>
+                  <Text>
+                    <Badge mr={3} borderRadius="full" px="2" colorScheme="pink">
+                             Sex      
+                    </Badge>
+                    {item.sex}
+                  </Text>
+                </div>
+              )}
+
+              {item?.age && (
+                <div isScroll={false} align="center">
+                  <Badge
+                    mr={3}
+                    mt={5}
+                    borderRadius="full"
+                    px="2"
+                    colorScheme="purple"
+                  >
+                    Examination Cards
+                  </Badge>
+                  <div>
+                    <SimpleGrid columns={2}>
+                      <GridItem>
+                        <ExaminationCards props={item} />
+                      </GridItem>
+                      <GridItem>
+                        <ExaminationCards props={item} />
+                      </GridItem>
+                      <GridItem>
+                        <ExaminationCards props={item} />
+                      </GridItem>
+                      <GridItem>
+                        <ExaminationCards props={item} />
+                      </GridItem>
+                    </SimpleGrid>
+                  </div>
+                </div>
+              )}
+            </ModalBody>
             <ModalFooter>
               <Button onClick={onClose}>Close</Button>
             </ModalFooter>
@@ -83,31 +163,7 @@ export default function GovPage() {
       <Badge colorScheme="green" fontSize="lg" mt={10}>
         Doctors {docCounter}
       </Badge>
-      {/* <SimpleGrid columns={3}>
-        {allUsers.map((item) => {
-          if (item.hospital) {
-            return (
-              <GridItem maxW="sm">
-                <GovUsers props={item} />
-              </GridItem>
-            );
-          }
-        })}
-      </SimpleGrid>
-      <Badge colorScheme="red" fontSize="lg" mt={4}>
-        Patients {patientCounter}
-      </Badge>
-      <SimpleGrid columns={3}>
-        {allUsers.map((item) => {
-          if (item.age) {
-            return (
-              <GridItem maxW="sm">
-                <GovUsers props={item} />
-              </GridItem>
-            );
-          }
-        })}
-      </SimpleGrid> */}
+
       <Table mb={8} variant="striped" colorScheme="teal">
         <Thead>
           <Tr>
@@ -147,14 +203,13 @@ export default function GovPage() {
             }
           })}
         </Tbody>
-        <Tfoot></Tfoot>
       </Table>
 
+      {/*Second Table */}
       <Badge colorScheme="red" fontSize="lg" mt={4}>
         Patients {patientCounter}
       </Badge>
       <Table variant="striped" colorScheme="teal">
-        <TableCaption>All users registered</TableCaption>
         <Thead>
           <Tr>
             <Th>Name</Th>
@@ -179,6 +234,10 @@ export default function GovPage() {
                       color={"gray.800"}
                     >
                       <IconButton
+                        onClick={() => {
+                          setItem(item);
+                          onOpen();
+                        }}
                         aria-label="Search database"
                         icon={<InfoIcon />}
                       />
@@ -191,9 +250,10 @@ export default function GovPage() {
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
+            <Th>Name</Th>
+            <Th>Surname</Th>
+            <Th>Email</Th>
+            <Th isNumeric>Info</Th>
           </Tr>
         </Tfoot>
       </Table>

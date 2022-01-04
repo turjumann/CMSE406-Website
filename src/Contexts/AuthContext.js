@@ -6,6 +6,7 @@ import {
   addDoc,
   serverTimestamp,
   orderBy,
+  getDocs,
   query,
 } from "firebase/firestore";
 import {
@@ -29,7 +30,6 @@ const AuthContext = createContext({
   forgotPassword: () => Promise,
   resetPassword: () => Promise,
   addUsersToDb: () => Promise,
-  checkUsers: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -126,8 +126,6 @@ export default function AuthContextProvider({ children }) {
     await addDoc(collectionRef, payload);
   };
 
-  const checkUsers = (email) => {};
-
   const value = {
     currentUser,
     allUsers,
@@ -140,7 +138,6 @@ export default function AuthContextProvider({ children }) {
     forgotPassword,
     resetPassword,
     addUsersToDb,
-    checkUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

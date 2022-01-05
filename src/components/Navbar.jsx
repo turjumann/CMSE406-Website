@@ -17,9 +17,6 @@ export function Navbar() {
   const { toggleColorMode } = useColorMode();
   const toast = useToast();
   const { logout, currentUser, wUser } = useAuth();
-  useEffect(() => {
-    console.log("Currents: " + wUser);
-  }, [wUser]);
 
   return (
     <Box
@@ -34,6 +31,9 @@ export function Navbar() {
         {!currentUser && <Navlink to="/register" name="Register" />}
         {currentUser && wUser === "Admin" && (
           <Navlink to="/news-page" name="News" />
+        )}
+        {currentUser && wUser === "Gov" && (
+          <Navlink to="/news-page-gov" name="News" />
         )}
         {currentUser && wUser === "Gov" && (
           <Navlink to="/gov-page" name="Gov Panel" />

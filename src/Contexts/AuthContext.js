@@ -23,6 +23,7 @@ const AuthContext = createContext({
   allUsers: null,
   news: null,
   wUser: null,
+  allEcs: null,
   addNews: () => Promise,
   register: () => Promise,
   login: () => Promise,
@@ -38,8 +39,8 @@ export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [news, setNews] = useState([{ title: "Loading..." }]);
-  const [wUser, setWUser] = useState();
-
+  const [wUser, setWUser] = useState(null);
+  const [allEcs, setAllEcs] = useState([]);
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "websiteUsers"),
@@ -75,6 +76,8 @@ export default function AuthContextProvider({ children }) {
     const unsubscribe = onSnapshot(collection(db, "allUsers"), (snapshot) => {
       setAllUsers(snapshot.docs.map((doc) => doc.data()));
     });
+    getEcUid2(getEcUid());
+
     return () => {
       unsubscribe();
     };
@@ -100,7 +103,7 @@ export default function AuthContextProvider({ children }) {
   };
 
   const logout = async () => {
-    setWUser();
+    setWUser(null);
     await signOut(auth);
   };
 
@@ -126,11 +129,40 @@ export default function AuthContextProvider({ children }) {
     await addDoc(collectionRef, payload);
   };
 
+  const getEcUid = async () => {
+    let collectionRef = collection(db, "EC-Forms");
+    let querySnap = await getDocs(collectionRef);
+    let arr = [];
+    querySnap.docs.forEach((doc) => {
+      arr.push(doc.id);
+    });
+
+    return arr;
+  };
+
+  const getEcUid2 = async () => {
+    const arr = await getEcUid();
+
+    arr.forEach(async (item) => {
+      let collection2 = query(
+        collection(db, "EC-Forms", item, "EC-History"),
+        orderBy("id")
+      );
+      let querySnap = await getDocs(collection2);
+      let arr2 = [];
+
+      querySnap.docs.forEach((doc) => {
+        setAllEcs((oldAllEcs) => [...oldAllEcs, doc.data()]);
+      });
+    });
+  };
+
   const value = {
     currentUser,
     allUsers,
     news,
     wUser,
+    allEcs,
     addNews,
     register,
     login,

@@ -12,13 +12,14 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useAuth } from "../Contexts/AuthContext";
-
+import { useEffect } from "react";
 function ExaminationCards({ props }) {
   return (
     <Flex p={25} w="full" alignItems="center" justifyContent="center">
       <Box
         bg={useColorModeValue("white", "gray.800")}
         width="500px"
+        height="240px"
         borderWidth="1px"
         rounded="lg"
         shadow="lg"
@@ -42,23 +43,64 @@ function ExaminationCards({ props }) {
           />
         )}
 
-        <Text align="left" mt={4} mx={4} fontSize="xs">
-          asdasd
+        <Text
+          fontWeight="bold"
+          align="center"
+          mt={4}
+          mx={4}
+          mb={4}
+          fontSize="xs"
+        >
+          Symptoms
         </Text>
-        <Text>asdasd</Text>
-        <Text>asdasd</Text>
-        <Text>asdasd</Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.lossOfST === 1 ? "Loss of Smell & Taste" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.fever === 1 ? "Fever" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.cough === 1 ? "Persistent Cough" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.fatigue === 1 ? "Fatigue" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.diarrhea === 1 ? "Diarrhea" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.abdominalPain === 1 ? "Abdominal Pain" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.meals === 1 ? "Skipping Meals" : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.meals === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.abdominalPain === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.diarrhea === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.fatigue === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.cough === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.fever === 0 ? " " : ""}
+        </Text>
+        <Text align="left" mx={4} fontSize="xs">
+          {props?.lossOfST === 0 ? " " : ""}
+        </Text>
+
         <Box p="6">
-          <Box d="flex" alignItems="baseline">
-            {props?.age ? (
-              <Badge rounded="full" px="2" fontSize="0.6em" colorScheme="red">
-                Patient
-              </Badge>
-            ) : (
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
-                Doctor
-              </Badge>
-            )}
+          <Box d="flex" justifyContent="flex-end" alignItems="baseline">
+            <Badge rounded="full" px="2" fontSize="0.7em" colorScheme="red">
+              Probability: {props.probability}%
+            </Badge>
           </Box>
           <Flex mt="1" justifyContent="space-between" alignContent="center">
             <Box
@@ -67,9 +109,7 @@ function ExaminationCards({ props }) {
               as="h3"
               lineHeight="tight"
               isTruncated
-            >
-              {props.name}
-            </Box>
+            ></Box>
           </Flex>
         </Box>
       </Box>

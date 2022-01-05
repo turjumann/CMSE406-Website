@@ -44,15 +44,13 @@ export default function GovPage() {
   const [scrollBehavior, setScrollBehavior] = useState("outside");
   const btnRef = useRef();
 
-  const { allUsers } = useAuth();
+  const { allUsers, allEcs } = useAuth();
   let patientCounter = 0;
   let docCounter = 0;
-  const propsToBePassed = {
-    adminName: "Admin",
-    adminEmail: "@Email",
-    adminImg: "ImgUrl",
-  };
 
+  useEffect(() => {
+    console.log(allEcs.length);
+  }, [allEcs]);
   return (
     <Layout>
       <>
@@ -129,22 +127,18 @@ export default function GovPage() {
                   >
                     Examination Cards
                   </Badge>
-                  <div>
-                    <SimpleGrid columns={2}>
-                      <GridItem>
-                        <ExaminationCards props={item} />
-                      </GridItem>
-                      <GridItem>
-                        <ExaminationCards props={item} />
-                      </GridItem>
-                      <GridItem>
-                        <ExaminationCards props={item} />
-                      </GridItem>
-                      <GridItem>
-                        <ExaminationCards props={item} />
-                      </GridItem>
-                    </SimpleGrid>
-                  </div>
+                  <SimpleGrid columns={2}>
+                    {allEcs.map((eCard) => {
+                      if (item.email === eCard.userEmail)
+                        return (
+                          <div>
+                            <GridItem>
+                              <ExaminationCards props={eCard} />
+                            </GridItem>
+                          </div>
+                        );
+                    })}
+                  </SimpleGrid>
                 </div>
               )}
             </ModalBody>

@@ -16,6 +16,7 @@ import AdminPanelPage from "../pages/AdminPanelPage";
 import Registerpage from "../pages/Registerpage";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import GovPage from "../pages/GovPage";
+import NewsPageGov from "../pages/NewsPageGov";
 
 export default function AppRouter(props) {
   return (
@@ -26,6 +27,7 @@ export default function AppRouter(props) {
           <ProtectedRoute exact path="/login" component={Loginpage} />
           <ProtectedRoute exact path="/register" component={Registerpage} />
           <ProtectedRoute exact path="/news-page" component={NewsPage} />
+          <ProtectedRoute exact path="/news-page-gov" component={NewsPageGov} />
           <ProtectedRoute exact path="/gov-page" component={GovPage} />
           <ProtectedRoute
             exact
@@ -54,13 +56,21 @@ const ProtectedRoute = (props) => {
   const location = useLocation();
   const { path } = props;
 
-  if (path === "/admin-panel-page" || path === "/news-page") {
-    return wUser === "Gov" ? (
-      <Redirect to={location.state?.from ?? "/"} />
-    ) : (
-      <Route {...props} />
-    );
-  }
+  // Protecting gov and admin from each other
+  // if (path === "/admin-panel-page" || path === "/news-page") {
+  //   return currentUser && wUser === "Gov" ? (
+  //     <Redirect to={location.state?.from ?? "/"} />
+  //   ) : (
+  //     <Route {...props} />
+  //   );
+  // }
+  // if (path === "/gov-page" || path === "/news-page-gov") {
+  //   return currentUser && wUser === "Admin" ? (
+  //     <Redirect to={location.state?.from ?? "/"} />
+  //   ) : (
+  //     <Route {...props} />
+  //   );
+  // }
 
   if (
     path === "/login" ||
@@ -74,6 +84,7 @@ const ProtectedRoute = (props) => {
       <Route {...props} />
     );
   }
+
   return currentUser ? (
     <Route {...props} />
   ) : (

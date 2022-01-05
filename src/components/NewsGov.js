@@ -22,7 +22,7 @@ import {
 import { Card } from "./Card";
 import { useAuth } from "../Contexts/AuthContext";
 
-function News({ props }) {
+function NewsGov({ props }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [scrollBehavior, setScrollBehavior] = useState("inside");
   const btnRef = useRef();
@@ -99,4 +99,4 @@ function News({ props }) {
   );
 }
 
-export default News;
+export default NewsGov;

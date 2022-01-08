@@ -86,6 +86,7 @@ export default function Loginpage() {
                 isClosable: true,
               });
             }
+            //@Fix login toast for admins and govs (When loggin in as admin with normal button, it says logged in as gov in both cases)
             setIsSubmitting(true);
             login(email, password)
               .then((response) => {
@@ -155,17 +156,7 @@ export default function Loginpage() {
             Register
           </Button>
         </HStack>
-        <DividerWithText my={6}>OR</DividerWithText>
-        <Button
-          variant="outline"
-          isLoading={isSubmitting2}
-          isFullWidth
-          colorScheme="red"
-          leftIcon={<FaUserCheck />}
-          onClick={loginAdmin}
-        >
-          Sign in as Admin
-        </Button>
+        <DividerWithText my={6}>CMSE406</DividerWithText>
       </Card>
     </Layout>
   );

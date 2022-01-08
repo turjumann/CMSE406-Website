@@ -17,12 +17,11 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { useAuth } from "../Contexts/AuthContext";
 import { EditIcon } from "@chakra-ui/icons";
-import { IconButton } from "@chakra-ui/react";
+import { IconButton, Spacer } from "@chakra-ui/react";
 import Users from "../components/Users";
 
 export default function AdminPanelPage() {
   const { allUsers } = useAuth();
-  console.log(allUsers);
   let patientCounter = 0;
   let docCounter = 0;
   const propsToBePassed = {
@@ -42,14 +41,41 @@ export default function AdminPanelPage() {
       <Badge colorScheme="green" fontSize="lg" mt={10}>
         Doctors {docCounter}
       </Badge>
+
+      <Spacer />
+      <Badge colorScheme="green" fontSize="sm" mt={10}>
+        Approved Doctors
+      </Badge>
       <SimpleGrid columns={3}>
         {allUsers.map((item) => {
-          if (item.hospital) {
-            return (
-              <GridItem maxW="sm">
-                <Users props={item} />
-              </GridItem>
-            );
+          if (item?.approved === "1") {
+            if (item.hospital) {
+              return (
+                <>
+                  <GridItem maxW="sm">
+                    <Users props={item} cColor={"green.200"} bColor={"green"} />
+                  </GridItem>
+                </>
+              );
+            }
+          }
+        })}
+      </SimpleGrid>
+      <Badge colorScheme="cyan" fontSize="sm" mt={10}>
+        Unapproved Doctors
+      </Badge>
+      <SimpleGrid columns={3}>
+        {allUsers.map((item) => {
+          if (item?.approved === "0" || item.approved === undefined) {
+            if (item.hospital) {
+              return (
+                <>
+                  <GridItem maxW="sm">
+                    <Users props={item} cColor={"cyan.200"} bColor={"cyan"} />
+                  </GridItem>
+                </>
+              );
+            }
           }
         })}
       </SimpleGrid>

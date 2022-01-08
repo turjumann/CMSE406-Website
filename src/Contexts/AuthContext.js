@@ -8,6 +8,8 @@ import {
   orderBy,
   getDocs,
   query,
+  updateDoc,
+  doc,
 } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
@@ -31,6 +33,8 @@ const AuthContext = createContext({
   forgotPassword: () => Promise,
   resetPassword: () => Promise,
   addUsersToDb: () => Promise,
+  patientModifications: () => Promise,
+  doctorModifications: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -74,7 +78,7 @@ export default function AuthContextProvider({ children }) {
   //Getting all users registered from database
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "allUsers"), (snapshot) => {
-      setAllUsers(snapshot.docs.map((doc) => doc.data()));
+      setAllUsers(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     getEcUid2(getEcUid());
 
@@ -157,6 +161,27 @@ export default function AuthContextProvider({ children }) {
     });
   };
 
+  const patientModifications = async (docId, { userMods }) => {
+    const docRef = doc(db, "allUsers", docId);
+    const payload = {
+      name: userMods.name,
+      surname: userMods.surname,
+      age: userMods.age,
+      sex: userMods.gender,
+    };
+    await updateDoc(docRef, payload);
+  };
+  const doctorModifications = async (docId, { userMods }) => {
+    const docRef = doc(db, "allUsers", docId);
+    const payload = {
+      name: userMods.name,
+      surname: userMods.surname,
+      hospital: userMods.hospitalName,
+      approved: userMods.approved,
+    };
+    await updateDoc(docRef, payload);
+  };
+
   const value = {
     currentUser,
     allUsers,
@@ -170,6 +195,8 @@ export default function AuthContextProvider({ children }) {
     forgotPassword,
     resetPassword,
     addUsersToDb,
+    patientModifications,
+    doctorModifications,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

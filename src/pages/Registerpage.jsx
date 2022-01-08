@@ -115,6 +115,7 @@ export default function Registerpage() {
             Login
           </Button>
         </Center>
+        <DividerWithText my={6}>CMSE406</DividerWithText>
       </Card>
     </Layout>
   );

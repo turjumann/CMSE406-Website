@@ -88,12 +88,36 @@ export default function GovPage() {
                 {item.email}
               </Text>
               {item?.hospital ? (
-                <Text>
-                  <Badge mr={3} borderRadius="full" px="2" colorScheme="purple">
-                     Hospital 
-                  </Badge>
-                  {item.hospital}
-                </Text>
+                <>
+                  <Text>
+                    <Badge
+                      mr={3}
+                      borderRadius="full"
+                      px="2"
+                      colorScheme="purple"
+                    >
+                       Hospital 
+                    </Badge>
+                    {item.hospital}
+                  </Text>
+
+                  <Text my={5}>
+                    <Badge
+                      mr={3}
+                      borderRadius="full"
+                      px="2"
+                      colorScheme="green"
+                    >
+                      Doctor's License
+                    </Badge>
+                  </Text>
+                  <Image
+                    boxSize="200px"
+                    src={item?.document}
+                    alt="Document"
+                    onClick={() => window.open(item.document, "_blank")}
+                  />
+                </>
               ) : (
                 <div>
                   <Text>
@@ -109,7 +133,7 @@ export default function GovPage() {
                   </Text>
                   <Text>
                     <Badge mr={3} borderRadius="full" px="2" colorScheme="pink">
-                             Sex      
+                         Gender  
                     </Badge>
                     {item.sex}
                   </Text>
@@ -150,7 +174,9 @@ export default function GovPage() {
       </>
       {allUsers.map((item) => {
         if (item?.hospital) {
-          docCounter++;
+          if (item.approved === "1") {
+            docCounter++;
+          }
         } else patientCounter++;
       })}
       <Heading>Users Registered</Heading>
@@ -170,30 +196,32 @@ export default function GovPage() {
         <Tbody>
           {allUsers.map((item) => {
             if (item.hospital) {
-              return (
-                <Tr key={item.email}>
-                  <Td>{item.name}</Td>
-                  <Td>{item.surname}</Td>
-                  <Td>{item.email}</Td>
-                  <Td isNumeric>
-                    <Tooltip
-                      label="More info"
-                      bg="white"
-                      placement={"top"}
-                      color={"gray.800"}
-                    >
-                      <IconButton
-                        onClick={() => {
-                          setItem(item);
-                          onOpen();
-                        }}
-                        aria-label="Search database"
-                        icon={<InfoIcon />}
-                      />
-                    </Tooltip>
-                  </Td>
-                </Tr>
-              );
+              if (item.approved === "1") {
+                return (
+                  <Tr key={item.email}>
+                    <Td>{item.name}</Td>
+                    <Td>{item.surname}</Td>
+                    <Td>{item.email}</Td>
+                    <Td isNumeric>
+                      <Tooltip
+                        label="More info"
+                        bg="white"
+                        placement={"top"}
+                        color={"gray.800"}
+                      >
+                        <IconButton
+                          onClick={() => {
+                            setItem(item);
+                            onOpen();
+                          }}
+                          aria-label="Search database"
+                          icon={<InfoIcon />}
+                        />
+                      </Tooltip>
+                    </Td>
+                  </Tr>
+                );
+              }
             }
           })}
         </Tbody>

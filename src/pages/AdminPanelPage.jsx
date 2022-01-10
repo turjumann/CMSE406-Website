@@ -12,6 +12,8 @@ import {
   TableCaption,
   SimpleGrid,
   GridItem,
+  Input,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -21,6 +23,9 @@ import { IconButton, Spacer } from "@chakra-ui/react";
 import Users from "../components/Users";
 
 export default function AdminPanelPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm2, setSearchTerm2] = useState("");
+  const [searchTerm3, setSearchTerm3] = useState("");
   const { allUsers } = useAuth();
   let patientCounter = 0;
   let docCounter = 0;
@@ -43,55 +48,146 @@ export default function AdminPanelPage() {
       </Badge>
 
       <Spacer />
-      <Badge colorScheme="green" fontSize="sm" mt={10}>
-        Approved Doctors
-      </Badge>
+      <Flex flexDirection="row" mt={10}>
+        <Badge colorScheme="green" fontSize="sm" h="6">
+          Approved Doctors
+        </Badge>
+        <Spacer />
+        <Input
+          width="80"
+          placeholder="Search approved doctors.."
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+          }}
+        />
+      </Flex>
       <SimpleGrid columns={3}>
-        {allUsers.map((item) => {
-          if (item?.approved === "1") {
-            if (item.hospital) {
+        {allUsers
+          .filter((val) => {
+            if (searchTerm == "") {
+              return val;
+            } else if (
+              val.name.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.surname.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.email.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item) => {
+            if (item?.approved === "1") {
+              if (item.hospital) {
+                return (
+                  <>
+                    <GridItem maxW="sm">
+                      <Users
+                        props={item}
+                        cColor={"green.200"}
+                        bColor={"green"}
+                      />
+                    </GridItem>
+                  </>
+                );
+              }
+            }
+          })}
+      </SimpleGrid>
+      <Flex flexDirection="row" mt={10}>
+        <Badge colorScheme="cyan" fontSize="sm" h="6">
+          Unapproved Doctors
+        </Badge>
+        <Spacer />
+        <Input
+          width="80"
+          placeholder="Search Unapproved doctors.."
+          onChange={(event) => {
+            setSearchTerm2(event.target.value);
+          }}
+        />
+      </Flex>
+      <SimpleGrid columns={3}>
+        {allUsers
+          .filter((val) => {
+            if (searchTerm2 == "") {
+              return val;
+            } else if (
+              val.name.toLowerCase().includes(searchTerm2.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.surname.toLowerCase().includes(searchTerm2.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.email.toLowerCase().includes(searchTerm2.toLowerCase())
+            ) {
+              return val;
+            }
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item) => {
+            if (item?.approved === "0" || item.approved === undefined) {
+              if (item.hospital) {
+                return (
+                  <>
+                    <GridItem maxW="sm">
+                      <Users props={item} cColor={"cyan.200"} bColor={"cyan"} />
+                    </GridItem>
+                  </>
+                );
+              }
+            }
+          })}
+      </SimpleGrid>
+      <Flex flexDirection="row" mt={10} w="full" h="full">
+        <Badge colorScheme="red" fontSize="sm" h="6">
+          Patients
+        </Badge>
+        <Spacer />
+        <Input
+          width="80"
+          placeholder="Search patients.."
+          onChange={(event) => {
+            setSearchTerm3(event.target.value);
+          }}
+        />
+      </Flex>
+      <SimpleGrid columns={3}>
+        {allUsers
+          .filter((val) => {
+            if (searchTerm3 == "") {
+              return val;
+            } else if (
+              val.name.toLowerCase().includes(searchTerm3.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.surname.toLowerCase().includes(searchTerm3.toLowerCase())
+            ) {
+              return val;
+            } else if (
+              val.email.toLowerCase().includes(searchTerm3.toLowerCase())
+            ) {
+              return val;
+            }
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item) => {
+            if (item.age) {
               return (
-                <>
-                  <GridItem maxW="sm">
-                    <Users props={item} cColor={"green.200"} bColor={"green"} />
-                  </GridItem>
-                </>
+                <GridItem maxW="sm">
+                  <Users props={item} />
+                </GridItem>
               );
             }
-          }
-        })}
-      </SimpleGrid>
-      <Badge colorScheme="cyan" fontSize="sm" mt={10}>
-        Unapproved Doctors
-      </Badge>
-      <SimpleGrid columns={3}>
-        {allUsers.map((item) => {
-          if (item?.approved === "0" || item.approved === undefined) {
-            if (item.hospital) {
-              return (
-                <>
-                  <GridItem maxW="sm">
-                    <Users props={item} cColor={"cyan.200"} bColor={"cyan"} />
-                  </GridItem>
-                </>
-              );
-            }
-          }
-        })}
-      </SimpleGrid>
-      <Badge colorScheme="red" fontSize="lg" mt={4}>
-        Patients {patientCounter}
-      </Badge>
-      <SimpleGrid columns={3}>
-        {allUsers.map((item) => {
-          if (item.age) {
-            return (
-              <GridItem maxW="sm">
-                <Users props={item} />
-              </GridItem>
-            );
-          }
-        })}
+          })}
       </SimpleGrid>
       {/* <Table variant="striped" colorScheme="teal">
         <TableCaption>All users registered</TableCaption>

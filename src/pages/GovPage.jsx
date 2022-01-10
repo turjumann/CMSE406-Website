@@ -29,6 +29,8 @@ import {
   Center,
   Text,
   Grid,
+  Input,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -43,6 +45,8 @@ export default function GovPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [scrollBehavior, setScrollBehavior] = useState("outside");
   const btnRef = useRef();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm2, setSearchTerm2] = useState("");
 
   const { allUsers, allEcs } = useAuth();
   let patientCounter = 0;
@@ -183,6 +187,12 @@ export default function GovPage() {
       <Badge colorScheme="green" fontSize="lg" mt={10}>
         Doctors {docCounter}
       </Badge>
+      <Input
+        placeholder="Search doctors.."
+        onChange={(event) => {
+          setSearchTerm(event.target.value);
+        }}
+      />
 
       <Table mb={8} variant="striped" colorScheme="teal">
         <Thead>
@@ -194,9 +204,104 @@ export default function GovPage() {
           </Tr>
         </Thead>
         <Tbody>
-          {allUsers.map((item) => {
-            if (item.hospital) {
-              if (item.approved === "1") {
+          {allUsers
+            .filter((val) => {
+              if (searchTerm == "") {
+                return val;
+              } else if (
+                val.name.toLowerCase().includes(searchTerm.toLowerCase())
+              ) {
+                return val;
+              } else if (
+                val.surname.toLowerCase().includes(searchTerm.toLowerCase())
+              ) {
+                return val;
+              } else if (
+                val.email.toLowerCase().includes(searchTerm.toLowerCase())
+              ) {
+                return val;
+              }
+            })
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((item) => {
+              if (item.hospital) {
+                if (item.approved === "1") {
+                  return (
+                    <Tr key={item.email}>
+                      <Td>{item.name}</Td>
+                      <Td>{item.surname}</Td>
+                      <Td>{item.email}</Td>
+                      <Td isNumeric>
+                        <Tooltip
+                          label="More info"
+                          bg="white"
+                          placement={"top"}
+                          color={"gray.800"}
+                        >
+                          <IconButton
+                            onClick={() => {
+                              setItem(item);
+                              onOpen();
+                            }}
+                            aria-label="Search database"
+                            icon={<InfoIcon />}
+                          />
+                        </Tooltip>
+                      </Td>
+                    </Tr>
+                  );
+                }
+              }
+            })}
+        </Tbody>
+      </Table>
+
+      {/*Second Table */}
+      <Badge colorScheme="red" fontSize="lg" mt={4}>
+        Patients {patientCounter}
+      </Badge>
+      <Input
+        placeholder="Search patients.."
+        onChange={(event) => {
+          setSearchTerm2(event.target.value);
+        }}
+      />
+      <Table variant="striped" colorScheme="teal">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th>Surname</Th>
+            <Th>Email</Th>
+            <Th isNumeric>Info</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {allUsers
+            .filter((val) => {
+              if (searchTerm2 == "") {
+                return val;
+              } else if (
+                val.name.toLowerCase().includes(searchTerm2.toLowerCase())
+              ) {
+                return val;
+              } else if (
+                val.surname.toLowerCase().includes(searchTerm2.toLowerCase())
+              ) {
+                return val;
+              } else if (
+                val.email.toLowerCase().includes(searchTerm2.toLowerCase())
+              ) {
+                return val;
+              } else if (searchTerm != "") {
+                if (
+                  !val.surname.toLowerCase().includes(searchTerm2.toLowerCase())
+                )
+                  return "Nothing found";
+              }
+            })
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((item) => {
+              if (item.age) {
                 return (
                   <Tr key={item.email}>
                     <Td>{item.name}</Td>
@@ -222,53 +327,7 @@ export default function GovPage() {
                   </Tr>
                 );
               }
-            }
-          })}
-        </Tbody>
-      </Table>
-
-      {/*Second Table */}
-      <Badge colorScheme="red" fontSize="lg" mt={4}>
-        Patients {patientCounter}
-      </Badge>
-      <Table variant="striped" colorScheme="teal">
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Surname</Th>
-            <Th>Email</Th>
-            <Th isNumeric>Info</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {allUsers.map((item) => {
-            if (item.age) {
-              return (
-                <Tr key={item.email}>
-                  <Td>{item.name}</Td>
-                  <Td>{item.surname}</Td>
-                  <Td>{item.email}</Td>
-                  <Td isNumeric>
-                    <Tooltip
-                      label="More info"
-                      bg="white"
-                      placement={"top"}
-                      color={"gray.800"}
-                    >
-                      <IconButton
-                        onClick={() => {
-                          setItem(item);
-                          onOpen();
-                        }}
-                        aria-label="Search database"
-                        icon={<InfoIcon />}
-                      />
-                    </Tooltip>
-                  </Td>
-                </Tr>
-              );
-            }
-          })}
+            })}
         </Tbody>
         <Tfoot>
           <Tr>

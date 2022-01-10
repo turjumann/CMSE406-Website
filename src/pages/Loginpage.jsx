@@ -33,40 +33,6 @@ export default function Loginpage() {
   const { login } = useAuth();
 
   const mounted = useMounted();
-  const loginAdmin = () => {
-    if (!email || !password) {
-      toast({
-        description: "Credentials are not valid",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-    setIsSubmitting2(true);
-    login(email, password)
-      .then((response) => {
-        console.log(response);
-        history.push(location.state?.from ?? "/");
-        toast({
-          description: "Logged in as Admin",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          description: error.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      })
-      .finally(() => {
-        mounted.current && setIsSubmitting2(false);
-      });
-  };
 
   return (
     <Layout>
@@ -93,7 +59,7 @@ export default function Loginpage() {
                 console.log(response);
                 history.push(location.state?.from ?? "/");
                 toast({
-                  description: "Logged in as Gov Auth",
+                  description: "Logged in",
                   status: "success",
                   duration: 2000,
                   isClosable: true,

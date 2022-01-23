@@ -106,7 +106,7 @@ export default function AdminPanelPage() {
         <Spacer />
         <Input
           width="80"
-          placeholder="Search Unapproved doctors.."
+          placeholder="Search unapproved doctors.."
           onChange={(event) => {
             setSearchTerm2(event.target.value);
           }}

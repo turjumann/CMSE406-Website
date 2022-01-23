@@ -80,7 +80,7 @@ function Users({ props, cColor, bColor }) {
         userMods.gender = props.sex;
       }
 
-      console.log("if executed");
+      console.log("if executed for patients");
 
       patientModifications(props.id, { userMods });
     } else {
@@ -106,7 +106,7 @@ function Users({ props, cColor, bColor }) {
       }
       doctorModifications(props.id, { userMods });
 
-      console.log("else executed");
+      console.log("else executed for doctors");
     }
 
     setHospitalName("");
@@ -215,7 +215,9 @@ function Users({ props, cColor, bColor }) {
                         isChecked={
                           props?.approved === "1" ? !checkedBox : checkedBox
                         }
-                        onChange={(e) => setCheckedBox(e.target.checked)}
+                        onChange={(e) => {
+                          setCheckedBox(e.target.checked);
+                        }}
                       ></Checkbox>
                     </FormLabel>
                   </FormControl>

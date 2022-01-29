@@ -40,7 +40,8 @@ const data = {
 };
 
 function Users({ props, cColor, bColor }) {
-  const { patientModifications, doctorModifications, allUsers } = useAuth();
+  const { patientModifications, doctorModifications, addDocsToDoctors } =
+    useAuth();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [checkedBox, setCheckedBox] = useState(false);
@@ -90,6 +91,7 @@ function Users({ props, cColor, bColor }) {
         hospitalName: hospitalName,
         email: props.email,
         approved: checkedBox ? "1" : "0",
+        profilePhotoUrl: props.profilePhotoUrl,
       };
 
       if (!name) {
@@ -105,7 +107,9 @@ function Users({ props, cColor, bColor }) {
         userMods.approved = props.approved;
       }
       doctorModifications(props.id, { userMods });
-
+      if (checkedBox == true) {
+        addDocsToDoctors(props.id, { userMods });
+      }
       console.log("else executed for doctors");
     }
 

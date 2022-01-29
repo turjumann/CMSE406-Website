@@ -4,6 +4,7 @@ import {
   collection,
   onSnapshot,
   addDoc,
+  setDoc,
   serverTimestamp,
   orderBy,
   getDocs,
@@ -35,6 +36,7 @@ const AuthContext = createContext({
   addUsersToDb: () => Promise,
   patientModifications: () => Promise,
   doctorModifications: () => Promise,
+  addDocsToDoctors: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -133,6 +135,18 @@ export default function AuthContextProvider({ children }) {
     await addDoc(collectionRef, payload);
   };
 
+  const addDocsToDoctors = async (docId, { userMods }) => {
+    const payload = {
+      name: userMods.name,
+      surname: userMods.surname,
+      hospital: userMods.hospitalName,
+      email: userMods.email,
+      profilePhotoUrl: userMods.profilePhotoUrl,
+      approved: userMods.approved,
+    };
+    await setDoc(doc(db, "doctors", docId), payload);
+  };
+
   const getEcUid = async () => {
     let collectionRef = collection(db, "EC-Forms");
     let querySnap = await getDocs(collectionRef);
@@ -195,6 +209,7 @@ export default function AuthContextProvider({ children }) {
     forgotPassword,
     resetPassword,
     addUsersToDb,
+    addDocsToDoctors,
     patientModifications,
     doctorModifications,
   };
